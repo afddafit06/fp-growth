@@ -1,5 +1,5 @@
 ---
-title: Algoritma FP-Growth
+title: Algoritma FP-Growth dengan R
 author: Syahron Fitrahjon-Institut Teknologi Statistika dan Bisnis Muhammadiyah
 date: "`r Sys.Date()`"
 output:
@@ -19,24 +19,34 @@ text-align: justify}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# R Markdown
+# Algoritma FP-Growrth
+FP-Growth adalah algoritma pencarian frequent itemsets yang didapat dari FP-tree dengan menjelajahi tree dari bawah menuju ke atas (Tan, Steinbach, & Kumar, 2004).
+FP-Growth adalah salah satu alternatif algoritma yang dapat digunakan untuk menentukan himpunan data yang paling sering muncul (frequent itemset) dalam sebuah kumpulan data (Indah Mulia Sari : 2013).
+FP-growth adalah salah satu alternatif algoritma yang dapat digunakan untuk menentukan himpunan data yang paling sering muncul (frequent itemset) dalam sebuah kumpulan data. FP-growth menggunakan pendekatan yang berbeda dari paradigma yang digunakan pada algoritma Apriori (Sensuse, 2012).
+FP-Growth adalah algoritma pencarian frequent itemsets yang didapat dari FP-tree (Rama Novta Miraldi, 2014). 
+Algoritma FP-Growth merupakan pengembangan dari algoritma Apriori. Sehingga kekurangan dari algoritma Apriori diperbaiki di algoritma FP-Growth. Algoritma ini menenfukan frequent itemset yang berakhkan suffix tertentu dengan menggunakan metode devide and conquer untuk memecah problem menjadi subproblem yang lebih kecil (Han, Kamber, & Pei, Data Mining : Concepts and Techniques, 201I).
+Jadi dapat disimpulkan bahwa FP-Growth adalah salah satu algoritma yang digunakan untuk mencari himpunan data yang sering muncul dari sekumpulan data, dengan menggunakan cara pembangktan stuktur data Tree. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents [@deCarvalho2012]. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# Tahapan Algoritma FP-Growth
 
-```{r cars}
-summary(cars)
+# Eksperimen Algoritma FP-Growth
+## Library
+```{r}
+library(tidyverse)
+library(arules)
+library(arulesViz)
+library(gridExtra)
+library(dplyr)
+library(readxl)
+library(plyr)
+library(ggplot2)
+library(knitr)
+library(lubridate)
+library(kableExtra)
+library(RColorBrewer)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 # Referensi
