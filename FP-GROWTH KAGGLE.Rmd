@@ -1,0 +1,51 @@
+---
+title: "FP-Growth"
+author: "Syahron Fitrahjon-Institut Teknologi Statistika dan Bisnis Muhammadiyah"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: flatly
+    higlight: zenburn
+    toc: true
+    toc_float:
+      collapsed: true
+    df_print: paged
+bibliography: references.bib
+---
+
+```{=html}
+<style>
+body{
+text-align: justify}
+</style>
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tahapan
+## Import Required libraries
+```{r}
+if(sessionInfo()['basePkgs']=="dplyr" | sessionInfo()['otherPkgs']=="dplyr"){
+  detach(package:dplyr, unload=TRUE)
+}
+
+if(sessionInfo()['basePkgs']=="tm" | sessionInfo()['otherPkgs']=="tm"){
+  detach(package:sentiment, unload=TRUE)
+  detach(package:tm, unload=TRUE)
+}
+
+library(plyr)
+library(arules)
+library(arulesViz)
+library(readr)
+```
+
+## Import the dataset
+```{r}
+groceries <- readr::read_csv(ItemList)
+class(groceries)
+```
+
+
+# Referensi

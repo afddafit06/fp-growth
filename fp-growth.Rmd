@@ -1,14 +1,15 @@
 ---
 title: "FP-Growth"
+author: "Syahron Fitrahjon-Institut Teknologi Statistika dan Bisnis Muhammadiyah"
 date: "`r Sys.Date()`"
-author: SYahron Fitrahjon-Institut Teknologi Statistika dan Bisnis Muhammadiyah
-output:
-  rmdformats::downcute:
-    self_contained: true
-    thumbnails: true
-    lightbox: true
-    gallery: false
-    highlight: tango
+output: 
+  html_document:
+    theme: flatly
+    higlight: zenburn
+    toc: true
+    toc_float:
+      collapsed: true
+    df_print: paged
 bibliography: references.bib
 ---
 
@@ -48,14 +49,10 @@ ExpectedCon fidence $=\frac{\text { Number of transactions with } B}{\text { Tot
 >
 Lift $=\frac{\text { Confidence }}{\text { Expected Confidence }}=\frac{P(A \cap B)}{P(A) \cdot P(B)}$
 
-# Tahapan
-## Contoh Data
-Data transaksi dengan "data Groceries" yang disertakan dengan arules pkg. Tidak seperti dataframe, menggunakan head(Groceries) tidak menampilkan item transaksi dalam data. Untuk melihat transaksi, gunakan fungsi inspect() sebagai gantinya.
-
-Karena penambangan asosiasi berhubungan dengan transaksi, data harus dikonversi ke salah satu transaksi kelas, yang tersedia di R melalui arules pkg. Ini adalah langkah yang diperlukan karena fungsi apriori() hanya menerima data transaksi transaksi kelas.
-
+# TAHAPAN
 ## Algoritma dan Paket
 ```{r}
+library(Matrix)
 library(arules)
 library(arulesViz)
 library(grid)
@@ -63,49 +60,80 @@ data("Groceries")
 class(Groceries)
 inspect(head(Groceries, 3))
 ```
-## Cara Melihat Item yang Paling Sering
-Eclat() mengambil objek transaksi dan memberikan item yang paling sering dalam data berdasarkan dukungan yang Anda berikan ke argumen supp. Maxlen mendefinisikan jumlah maksimum item di setiap itemset item yang sering.
+## Konversikan file CSV ke Format Keranjang
 ```{r}
-frequentItems <- eclat (Groceries, parameter = list(supp = 0.07, maxlen = 15))
+txn = read.transactions(file="ItemList.csv", rm.duplicates= TRUE, format="basket",sep=",",cols=1);
+print(txn)
 ```
+Ada total 14.964 transaksi dengan 168 produk berbeda.
+
+### Hapus kutipan dari Transaksi
 ```{r}
-inspect(frequentItems)
-```
-```{r}
-itemFrequencyPlot(Groceries, topN=10, type="absolute", main="Item Frequency")
+txn@itemInfo$labels <- gsub("\"","",txn@itemInfo$labels)
 ```
 
-## Cara Mendapatkan Aturan Rekomendasi Produk
+## Algoritma Apriori
 ```{r}
-rules <- apriori (Groceries, parameter = list(supp = 0.001, conf = 0.5))
+basket_rules <- apriori(txn, parameter = list(minlen=2, sup = 0.001, conf = 0.05, target="rules"))
 ```
-```{r}
-rules_conf <- sort (rules, by="confidence", decreasing=TRUE)
-```
-```{r}
-inspect(head(rules_conf))
-```
-```{r}
-rules_lift <- sort (rules, by="lift", decreasing=TRUE)
-inspect(head(rules_lift))
-```
-Aturan dengan keyakinan 1 (lihat rules_conf di atas) menyiratkan bahwa, setiap kali item LHS (Itemsets in Antecedent) dibeli, item RHS (itemsets sebagai konsekuensinya) juga dibeli 100% dari waktu.
 
-Aturan dengan lift 18 (lihat rules_lift atas) menyiratkan bahwa, item dalam LHS dan RHS 18 kali lebih mungkin untuk dibeli bersama dibandingkan dengan pembelian ketika diasumsikan tidak terkait.
+### Total aturan yang dihasilkan
+```{r}
+summary(basket_rules)
+```
 
-## Cara Mengontrol Jumlah Aturan dalam Output
+### Memeriksa aturan keranjang
+```{r}
+inspect(basket_rules[1:20])
+```
+
+## Memvisualisasikan Aturan Asosiasi
+```{r}
+plot(basket_rules, jitter = 0)
+```
+
+```{r}
+plot(basket_rules, method = "grouped", control = list(k = 5))
+```
+
+### Grafik dari 20 aturan pertama
+```{r}
+plot(basket_rules[1:20], method="graph")
+```
+
+### Grafik dari 50 aturan pertama
+```{r}
+plot(basket_rules[1:50], method="graph")
+```
+
+### Plot koordinat paralel
+```{r}
+plot(basket_rules[1:20], method="paracoord")
+```
+
+
+## Produk Paling Sering
+```{r}
+itemFrequencyPlot(txn, topN = 10)
+```
+
+## Kontrol Jumlah Aturan di Output
 ```{r}
 rules <- apriori(Groceries, parameter = list (supp = 0.001, conf = 0.2, maxlen=3))
 ```
+
 ```{r}
 summary(rules)
 ```
+
 ```{r}
 inspect(head(sort(rules, by ="lift"),5))
 ```
+
 ```{r}
 plot(rules)
 ```
+
 ```{r}
 plot(rules , shading="order", control=list(main="two-key plot"))
 ```
@@ -114,9 +142,13 @@ plot(rules , shading="order", control=list(main="two-key plot"))
 RulesBev1 <- subset(rules, subset = rhs %ain% "soda")
 summary(RulesBev1)
 ```
+
 ```{r}
 inspect(head(sort(RulesBev1, by ="lift"),5))
 ```
 
 # REFERENSI
-https://rpubs.com/anikbibib/Arules
+1. https://rpubs.com/anikbibib/Arules
+2. https://github.com/afddafit06/fp-growth
+3. https://www.kaggle.com/code/heeraldedhia/market-basket-analysis-using-apriori-algorithm/data
+4. https://www.kaggle.com/code/heeraldedhia/market-basket-analysis-using-apriori-algorithm/notebook#Apriori-Algorithm
