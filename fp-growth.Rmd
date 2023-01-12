@@ -150,5 +150,6 @@ inspect(head(sort(RulesBev1, by ="lift"),5))
 # REFERENSI
 1. https://rpubs.com/anikbibib/Arules
 2. https://github.com/afddafit06/fp-growth
-3. https://www.kaggle.com/code/heeraldedhia/market-basket-analysis-using-apriori-algorithm/data
-4. https://www.kaggle.com/code/heeraldedhia/market-basket-analysis-using-apriori-algorithm/notebook#Apriori-Algorithm
+3. https://rpubs.com/afddafit06
+4. https://www.kaggle.com/code/heeraldedhia/market-basket-analysis-using-apriori-algorithm/data
+5. https://www.kaggle.com/code/heeraldedhia/market-basket-analysis-using-apriori-algorithm/notebook#Apriori-Algorithm
