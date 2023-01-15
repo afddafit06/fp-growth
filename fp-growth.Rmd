@@ -60,89 +60,89 @@ data("Groceries")
 class(Groceries)
 inspect(head(Groceries, 3))
 ```
-## Konversikan file CSV ke Format Keranjang
+## Produk Paling Sering
 ```{r}
-txn = read.transactions(file="ItemList.csv", rm.duplicates= TRUE, format="basket",sep=",",cols=1);
-print(txn)
+frequentItems <- eclat (Groceries, parameter = list(supp = 0.07, maxlen = 15)) #Menghitung dukungan untuk item yang sering
 ```
-Ada total 14.964 transaksi dengan 168 produk berbeda.
-
-### Hapus kutipan dari Transaksi
 ```{r}
-txn@itemInfo$labels <- gsub("\"","",txn@itemInfo$labels)
+inspect(frequentItems)
+```
+```{r}
+itemFrequencyPlot(Groceries, topN=10, type="absolute", main="Item Frequency")
+```
+
+## Aturan Rekomendasi Produk
+```{r}
+rules <- apriori (Groceries, parameter = list(supp = 0.001, conf = 0.5)) #Minimal dukungan ialah 0.001, kepercayaan ialah 0.8
+```
+```{r}
+rules_conf <- sort (rules, by="confidence", decreasing=TRUE) #Aturan kepercayaan yang tinggi
+inspect(head(rules_conf)) #Menunjukkan dukungan,tingkatan dan kepercayaan untuk semua aturan
+```
+
+```{r}
+rules_lift <- sort (rules, by="lift", decreasing=TRUE) #Aturan tingkatan yang tinggi
+inspect(head(rules_lift)) #Menunjukkan dukungan, tingkatan dan kepercayaan untuk semua aturan
 ```
 
 ## Algoritma Apriori
-```{r}
-basket_rules <- apriori(txn, parameter = list(minlen=2, sup = 0.001, conf = 0.05, target="rules"))
+```{r eval=FALSE}
+Groceries <- apriori(txn, parameter = list(minlen=2, sup = 0.001, conf = 0.05, target="rules"))
 ```
 
 ### Total aturan yang dihasilkan
 ```{r}
-summary(basket_rules)
+summary(Groceries)
 ```
 
 ### Memeriksa aturan keranjang
 ```{r}
-inspect(basket_rules[1:20])
+inspect(Groceries[1:20])
 ```
 
 ## Memvisualisasikan Aturan Asosiasi
 ```{r}
-plot(basket_rules, jitter = 0)
+plot(Groceries, jitter = 0)
 ```
-
 ```{r}
-plot(basket_rules, method = "grouped", control = list(k = 5))
+plot(Groceries, method = "grouped", control = list(k = 5))
 ```
 
 ### Grafik dari 20 aturan pertama
 ```{r}
-plot(basket_rules[1:20], method="graph")
+plot(Groceries[1:20], method="graph")
 ```
 
 ### Grafik dari 50 aturan pertama
 ```{r}
-plot(basket_rules[1:50], method="graph")
+plot(Groceries[1:50], method="graph")
 ```
 
 ### Plot koordinat paralel
 ```{r}
-plot(basket_rules[1:20], method="paracoord")
-```
-
-
-## Produk Paling Sering
-```{r}
-itemFrequencyPlot(txn, topN = 10)
+plot(Groceries[1:20], method="paracoord")
 ```
 
 ## Kontrol Jumlah Aturan di Output
 ```{r}
-rules <- apriori(Groceries, parameter = list (supp = 0.001, conf = 0.2, maxlen=3))
+rules <- apriori(Groceries, parameter = list (supp = 0.001, conf = 0.2, maxlen=3)) #maxlen=3, membatasi elemen dalam aturan menjadi 3
 ```
-
 ```{r}
 summary(rules)
 ```
-
 ```{r}
-inspect(head(sort(rules, by ="lift"),5))
+inspect(head(sort(rules, by ="lift"),5)) #Periksa 5 aturan teratas dengan tingkatan tertinggi
 ```
-
 ```{r}
 plot(rules)
 ```
-
 ```{r}
 plot(rules , shading="order", control=list(main="two-key plot"))
 ```
-
 ```{r}
 RulesBev1 <- subset(rules, subset = rhs %ain% "soda")
 summary(RulesBev1)
 ```
-
 ```{r}
 inspect(head(sort(RulesBev1, by ="lift"),5))
 ```

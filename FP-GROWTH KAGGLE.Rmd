@@ -41,10 +41,10 @@ library(arulesViz)
 library(readr)
 ```
 
-## Import the dataset
+## Convert CSV file to Basket Format
 ```{r}
-groceries <- readr::read_csv(ItemList)
-class(groceries)
+txn = read.transactions(file="ItemList.csv", rm.duplicates= TRUE, format="basket",sep=",",cols=1);
+print(txn)
 ```
 
 
